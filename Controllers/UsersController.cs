@@ -20,25 +20,34 @@ public class UserController : ControllerBase
         return new JsonResult(users);
     }
 
-   [HttpPost]
-public async Task<IActionResult> CreateUser([FromBody] User user)
-{
-    if (!ModelState.IsValid)
+    [HttpPost]
+    public async Task<IActionResult> CreateUser([FromBody] User user)
     {
-        return BadRequest(ModelState);
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState); // Retorna los errores de validación
+        }
+
+        try
+        {
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetUserById", new { id = user.Id }, user);
+        }
+        catch (Exception ex)
+        {
+            // Manejo de excepciones si es necesario
+            return StatusCode(500, $"Error interno al crear usuario: {ex.Message}");
+        }
     }
 
-    _context.Users.Add(user);
-    await _context.SaveChangesAsync();
-
-    return CreatedAtAction("GetUserById", new { id = user.Id }, user);
-}
 
 
 
 
 }
 
-// Data transfer object (optional)
+
 
 

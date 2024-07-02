@@ -1,37 +1,42 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
-
+using System.Linq;
+using System.Threading.Tasks;
 
 [Route("api/login")]
 [ApiController]
-public class AuthController : ControllerBase
+public class LoginController : ControllerBase
 {
     private readonly AppDbContext _context;
 
-    public AuthController(AppDbContext context)
+    public LoginController(AppDbContext context)
     {
         _context = context;
     }
 
-    [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] User user)
+    [HttpPost]
+    public async Task<IActionResult> Login([FromBody] UserLoginDto loginDto)
     {
-        if (!ModelState.IsValid)
+        // Buscar el usuario por email y contraseña
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.Email == loginDto.Email && u.Password == loginDto.Password);
+
+        if (user == null)
         {
-            return BadRequest(ModelState);
+            return BadRequest("Credenciales inválidas"); // Retorna un error si las credenciales no son válidas
         }
 
-        var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == user.Email && u.Password == user.Password);
+        // Simulación de generación de token (debes implementar tu propia lógica de autenticación)
+        var token = "JWT_TOKEN_GENERADO";
 
-        if (existingUser == null)
-        {
-            return Unauthorized();
-        }
-
-        // Implement logic to generate JWT token using your secret key (not shown here)
-        // ...
-
-        return Ok(new { token = "your-jwt-token" }); // Replace with actual generated token
+        // Aquí podrías devolver más información del usuario si lo deseas
+        return Ok(new { Token = token, user.Id, user.Email }); // Retorna el token y otros datos relevantes
     }
+}
+
+// DTO (Data Transfer Object) para el login
+public class UserLoginDto
+{
+    public required string Email { get; set; }
+    public required string Password { get; set; }
 }

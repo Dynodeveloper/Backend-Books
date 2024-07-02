@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-// Replace with your project's namespace
 
 public class Program
 {
@@ -15,13 +14,20 @@ public class Program
         builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseMySQL(
                 "Server=monorail.proxy.rlwy.net;Port=53742;Database=railway;User=root;Password=aOzaCoLTopmiCTtMHvBhJLPLDUHeIrPV;"));
-        // Register controllers
-        builder.Services.AddControllers();
+
         // Register controllers
         builder.Services.AddControllers();
 
         // Build the application
         var app = builder.Build();
+
+        // Configure CORS
+        app.UseCors(options =>
+        {
+            options.AllowAnyOrigin() // Permite cualquier origen
+                   .AllowAnyMethod() // Permite cualquier método HTTP (GET, POST, etc.)
+                   .AllowAnyHeader(); // Permite cualquier header HTTP
+        });
 
         // Use middleware
         app.UseRouting();

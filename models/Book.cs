@@ -6,6 +6,8 @@ public class Book
     public string Author { get; set; }
     public string Category { get; set; }
 
+    public string ImageUrl { get; set; }
+
     // (Opcional) Agregar propiedades adicionales si las necesitas)
 
     public virtual List<Review> Reviews { get; set; } // One-to-many relationship with reviews

@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 // Reemplaza con el nombre real de tu proyecto
 
-[Route("api/review")]
+[Route("api/eview")]
 [ApiController]
 public class ReviewController : Controller
 {
